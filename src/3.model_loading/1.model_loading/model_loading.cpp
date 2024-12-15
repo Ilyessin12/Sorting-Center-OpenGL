@@ -35,6 +35,10 @@ std::vector<Model> models;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
+// Ini khusus Hafidh buat path
+const std::string basePath = "D:/College/Semester_3/visual_studio/Sorting-Center-OpenGL/src/3.model_loading/1.model_loading/";
+
+
 int main()
 {
     // glfw: initialize and configure
@@ -83,8 +87,18 @@ int main()
 
     // build and compile shaders
     // -------------------------
+    
+    // Buat yang lain pake yang ini
     Shader ourShader("1.model_loading.vs", "1.model_loading.fs");
 
+
+    //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+    // Buat Hafidh pake yg ini ; jadikan komen line ini jika terjadi error
+    //Shader ourShader((basePath + "1.model_loading.vs").c_str(),
+        //(basePath + "1.model_loading.fs").c_str());
+    //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+     
+    
     // load models
     // -----------
     // Model ourModel(FileSystem::getPath("resources/objects/rak/rak.obj"));
