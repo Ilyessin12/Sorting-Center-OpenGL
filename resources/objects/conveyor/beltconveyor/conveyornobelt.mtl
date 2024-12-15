@@ -1,0 +1,12 @@
+# Blender 4.3.0 MTL File: 'beltconveyor.blend'
+# www.blender.org
+
+newmtl Belt.001
+Ns 3.713505
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1000.000000
+d 1.000000
+illum 2
+map_Kd textures/Image_4.001.jpg
