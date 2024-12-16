@@ -50,7 +50,7 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 // Ini khusus Hafidh buat path
-// const std::string basePath = "D:/College/Semester_3/visual_studio/Sorting-Center-OpenGL/src/3.model_loading/1.model_loading/";
+ const std::string basePath = "D:/College/Semester_3/visual_studio/Sorting-Center-OpenGL/src/3.model_loading/1.model_loading/";
 
 
 int main()
@@ -103,13 +103,13 @@ int main()
     // -------------------------
     
     // Buat yang lain pake yang ini
-    Shader ourShader("1.model_loading.vs", "1.model_loading.fs");
+    //Shader ourShader("1.model_loading.vs", "1.model_loading.fs");
 
 
     //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
     // Buat Hafidh pake yg ini ; jadikan komen line ini jika terjadi error
-    //Shader ourShader((basePath + "1.model_loading.vs").c_str(),
-        //(basePath + "1.model_loading.fs").c_str());
+    Shader ourShader((basePath + "1.model_loading.vs").c_str(),
+        (basePath + "1.model_loading.fs").c_str());
     //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
      
     
@@ -117,23 +117,26 @@ int main()
     // -----------
     // Model ourModel(FileSystem::getPath("resources/objects/rak/rak.obj"));
 
-    //model conveyor belt without belt
-	models.push_back(Model(FileSystem::getPath("resources/objects/conveyor/conveyornobelt/conveyornobelt.obj")));
-    //model belt
-	models.push_back(Model(FileSystem::getPath("resources/objects/conveyor/beltconveyor/conveyornobelt.obj")));
+    models.push_back(Model(FileSystem::getPath("resources/objects/conveyortinggi/frame/frameconveyor.obj")));     // Frame
+    models.push_back(Model(FileSystem::getPath("resources/objects/conveyortinggi/belt/belt.obj")));     // Belt
 
     //position for each models
     std::vector<glm::vec3> modelPositions = {
         //belt should be right ontop of the conveyor belt without belt model
-		glm::vec3(0.0f, -1.0f, 0.0f),
-		glm::vec3(1.5f, -1.01f, -0.3f)
+        // horizontal | Vertikal | Far
+
+        // Conveyor belt 1
+        glm::vec3(0.0f, 0.0f, 0.0f),    // Frame
+        glm::vec3(1.5f, -0.08f, -0.5f), // Belt
     };
 
-	// scale for each models
+    // scale for each models
     std::vector<glm::vec3> modelScales = {
-        glm::vec3(0.5f, 0.5f, 0.5f),
-        glm::vec3(0.5f, 0.5f, 0.5f)
+        // Conveyor belt 1
+        glm::vec3(0.5f, 0.5f, 0.5f),    // Belt
+        glm::vec3(0.5f, 0.5f, 0.5f),    // Belt
     };
+
 
     //index for the model that wants its texture to be animated
     size_t animationModelIndex = 1;
