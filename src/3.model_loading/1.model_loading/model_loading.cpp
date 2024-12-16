@@ -12,6 +12,20 @@
 
 #include <iostream>
 #include <vector>
+#include <sstream>
+#include <iomanip>
+
+//function to update the windows title so we could see the x y z value in real time
+void updateWindowTitle(GLFWwindow* window, const Camera& camera)
+{
+    std::stringstream ss;
+    ss << "Conveyor cuy | Camera Position: ("
+        << std::fixed << std::setprecision(2)
+        << camera.Position.x << ", "
+        << camera.Position.y << ", "
+        << camera.Position.z << ")";
+    glfwSetWindowTitle(window, ss.str().c_str());
+}
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -36,7 +50,7 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 // Ini khusus Hafidh buat path
-const std::string basePath = "D:/College/Semester_3/visual_studio/Sorting-Center-OpenGL/src/3.model_loading/1.model_loading/";
+// const std::string basePath = "D:/College/Semester_3/visual_studio/Sorting-Center-OpenGL/src/3.model_loading/1.model_loading/";
 
 
 int main()
@@ -111,8 +125,8 @@ int main()
     //position for each models
     std::vector<glm::vec3> modelPositions = {
         //belt should be right ontop of the conveyor belt without belt model
-		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(1.5f, -0.01f, -0.3f)
+		glm::vec3(0.0f, -1.0f, 0.0f),
+		glm::vec3(1.5f, -1.01f, -0.3f)
     };
 
 	// scale for each models
@@ -142,6 +156,15 @@ int main()
         // input
         // -----
         processInput(window);
+
+        // *Update the window title with the camera position*
+        // Update every 0.5 seconds
+        static float lastTitleUpdateTime = 0.0f;
+        if (currentFrame - lastTitleUpdateTime >= 0.5f)
+        {
+            updateWindowTitle(window, camera);
+            lastTitleUpdateTime = currentFrame;
+        }
 
         // render
         // ------
