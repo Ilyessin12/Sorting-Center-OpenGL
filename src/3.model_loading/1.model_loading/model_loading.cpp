@@ -19,7 +19,7 @@
 void updateWindowTitle(GLFWwindow* window, const Camera& camera)
 {
     std::stringstream ss;
-    ss << "Conveyor cuy | Camera Position: ("
+    ss << "Sorting-Center-|-Camera-Position: ("
         << std::fixed << std::setprecision(2)
         << camera.Position.x << ", "
         << camera.Position.y << ", "
@@ -68,7 +68,7 @@ int main()
 
     // glfw window creation
     // --------------------
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Conveyor cuy", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Sorting-Center", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -127,7 +127,7 @@ int main()
 
         // Conveyor belt 1
         glm::vec3(0.0f, 0.0f, 0.0f),    // Frame
-        glm::vec3(1.5f, -0.08f, -0.5f), // Belt
+        glm::vec3(0.0f, -3.8f, 0.0f), // Belt
     };
 
     // scale for each models
