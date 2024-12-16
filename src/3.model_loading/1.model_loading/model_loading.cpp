@@ -127,7 +127,7 @@ int main()
 
         // Conveyor belt 1
         glm::vec3(0.0f, 0.0f, 0.0f),    // Frame
-        glm::vec3(0.0f, -3.8f, 0.0f), // Belt
+        glm::vec3(0.25f, -4.4f, 0.235f), // Belt
     };
 
     // scale for each models
