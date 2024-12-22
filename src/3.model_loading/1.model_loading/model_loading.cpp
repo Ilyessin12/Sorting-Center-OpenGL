@@ -49,8 +49,11 @@ std::vector<Model> models;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
+//movement speed for box object logic, alter if needed
+float moveSpeed = 2.5f;
+
 // Ini khusus Hafidh buat path
- const std::string basePath = "D:/College/Semester_3/visual_studio/Sorting-Center-OpenGL/src/3.model_loading/1.model_loading/";
+// const std::string basePath = "D:/College/Semester_3/visual_studio/Sorting-Center-OpenGL/src/3.model_loading/1.model_loading/";
 
 
 int main()
@@ -103,22 +106,25 @@ int main()
     // -------------------------
     
     // Buat yang lain pake yang ini
-    //Shader ourShader("1.model_loading.vs", "1.model_loading.fs");
+    Shader ourShader("1.model_loading.vs", "1.model_loading.fs");
 
 
     //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
     // Buat Hafidh pake yg ini ; jadikan komen line ini jika terjadi error
-    Shader ourShader((basePath + "1.model_loading.vs").c_str(),
-        (basePath + "1.model_loading.fs").c_str());
+    // Shader ourShader((basePath + "1.model_loading.vs").c_str(),
+    //    (basePath + "1.model_loading.fs").c_str());
     //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
      
     
     // load models
     // -----------
-    // Model ourModel(FileSystem::getPath("resources/objects/rak/rak.obj"));
+    // Model ourModel(FileSystem::getPath("resources/objects/rak/rak.obj")); //rak
 
     models.push_back(Model(FileSystem::getPath("resources/objects/conveyortinggi/frame/frameconveyor.obj")));     // Frame
     models.push_back(Model(FileSystem::getPath("resources/objects/conveyortinggi/belt/belt.obj")));     // Belt
+	//models.push_back(Model(FileSystem::getPath("resources/objects/spawner/baggage.obj"))); //box spawner
+    models.push_back(Model(FileSystem::getPath("resources/objects/boxdetail/boxbesarterbuka/boxbesarterbuka.obj")));// large box
+    models.push_back(Model(FileSystem::getPath("resources/objects/boxdetail/boxkeciltertutup/boxkeciltertutup.obj")));// small box
 
     //position for each models
     std::vector<glm::vec3> modelPositions = {
@@ -128,6 +134,13 @@ int main()
         // Conveyor belt 1
         glm::vec3(0.0f, 0.0f, 0.0f),    // Frame
         glm::vec3(0.25f, -4.4f, 0.235f), // Belt
+
+        //box spawner
+		//glm::vec3(1.0f, 0.0f, 0.0f), //box spawner
+		// large box
+		glm::vec3(-1.7f, 0.0f, -6.0f), // large box
+		// small box
+		glm::vec3(3.7f, 4.0f, 24.0f), // small box
     };
 
     // scale for each models
@@ -135,11 +148,23 @@ int main()
         // Conveyor belt 1
         glm::vec3(0.5f, 0.5f, 0.5f),    // Belt
         glm::vec3(0.5f, 0.5f, 0.5f),    // Belt
+
+		//box spawner
+		//glm::vec3(0.5f, 0.5f, 0.5f), //box spawner
+		// large box
+		glm::vec3(4.5f, 4.5f, 4.5f), // large box
+		// small box
+		glm::vec3(4.5f, 4.5f, 4.5f), // small box
     };
 
 
     //index for the model that wants its texture to be animated
     size_t animationModelIndex = 1;
+
+	//for box logic
+    glm::vec3 initialSmallBoxPos = modelPositions[3]; // Store the original position of the small box
+    float meltTimer = 0.0f; // Timer to track time after melting
+    bool isMelted = false;  // Flag to indicate if the box has melted
 
     
     // draw in wireframe
@@ -167,6 +192,59 @@ int main()
         {
             updateWindowTitle(window, camera);
             lastTitleUpdateTime = currentFrame;
+        }
+
+        //for box logic
+
+        // Update the small box's position
+        glm::vec3& smallBoxPos = modelPositions[3]; // Index of the small box
+        glm::vec3& largeBoxPos = modelPositions[2]; // Index of the large box
+
+        if (!isMelted)
+        {
+            // Move along Z-axis until Z positions are equal
+            if (smallBoxPos.z != largeBoxPos.z)
+            {
+                float zDirection = (largeBoxPos.z - smallBoxPos.z) > 0 ? 1.0f : -1.0f;
+                smallBoxPos.z += zDirection * moveSpeed * deltaTime;
+
+                // Clamp the position to the large box's Z position
+                if ((zDirection > 0 && smallBoxPos.z > largeBoxPos.z) ||
+                    (zDirection < 0 && smallBoxPos.z < largeBoxPos.z))
+                {
+                    smallBoxPos.z = largeBoxPos.z;
+                }
+            }
+            // Once Z positions are equal, move along Y-axis
+            else if (smallBoxPos.y != largeBoxPos.y)
+            {
+                float yDirection = (largeBoxPos.y - smallBoxPos.y) > 0 ? 1.0f : -1.0f;
+                smallBoxPos.y += yDirection * moveSpeed * deltaTime;
+
+                // Clamp the position to the large box's Y position
+                if ((yDirection > 0 && smallBoxPos.y > largeBoxPos.y) ||
+                    (yDirection < 0 && smallBoxPos.y < largeBoxPos.y))
+                {
+                    smallBoxPos.y = largeBoxPos.y;
+                }
+            }
+            else
+            {
+                // The small box has melted with the large box
+                isMelted = true;
+                meltTimer = 0.0f; // Start the timer
+            }
+        }
+        else
+        {
+            // Increment the timer
+            meltTimer += deltaTime;
+            if (meltTimer >= 1.0f)
+            {
+                // Reset the small box to its original position
+                smallBoxPos = initialSmallBoxPos;
+                isMelted = false;
+            }
         }
 
         // render
