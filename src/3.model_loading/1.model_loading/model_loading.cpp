@@ -50,7 +50,7 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 // Ini khusus Hafidh buat path
-// const std::string basePath = "D:/College/Semester_3/visual_studio/Sorting-Center-OpenGL/src/3.model_loading/1.model_loading/";
+ const std::string basePath = "D:/College/Semester_3/visual_studio/Sorting-Center-OpenGL/src/3.model_loading/1.model_loading/";
 
 
 //BOX MOVEMENT LOGICS
@@ -132,13 +132,13 @@ int main()
     // -------------------------
 
     // Buat yang lain pake yang ini
-    Shader ourShader("1.model_loading.vs", "1.model_loading.fs");
+    //Shader ourShader("1.model_loading.vs", "1.model_loading.fs");
 
 
     //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
     // Buat Hafidh pake yg ini ; jadikan komen line ini jika terjadi error
-    // Shader ourShader((basePath + "1.model_loading.vs").c_str(),
-    //    (basePath + "1.model_loading.fs").c_str());
+     Shader ourShader((basePath + "1.model_loading.vs").c_str(),
+        (basePath + "1.model_loading.fs").c_str());
     //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 
 
@@ -169,33 +169,23 @@ int main()
     models.push_back(Model(FileSystem::getPath("resources/objects/spawnernew/untitled.obj")));
 
     // Rak 1 [11-16]
-    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakFull/rak.obj")));
-    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));
-    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));
-    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));
-    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));
-    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));
-
+    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rak_tangga/rak_tangga.obj")));
+    
     // Box Rak 1 [17-19]
     models.push_back(Model(FileSystem::getPath("resources/objects/boxdetail/boxkeciltertutup/boxkeciltertutup.obj")));     // Frame
     models.push_back(Model(FileSystem::getPath("resources/objects/boxdetail/boxkeciltertutup/boxkeciltertutup.obj")));
     models.push_back(Model(FileSystem::getPath("resources/objects/boxdetail/boxkeciltertutup/boxkeciltertutup.obj")));
 
     // Rak 2 [20-25]
-    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));     // Frame
-    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));     // Frame
-    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));     // Frame
-    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));     // Frame
-    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));     // Frame
-    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));     // Frame
-
+    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakonly.obj")));     // Frame
+    
     // Rak 3 [26-31]
-    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));     // Frame
-    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));     // Frame
-    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));     // Frame
-    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));     // Frame
-    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));     // Frame
-    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));     // Frame
+    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakonly.obj")));     // Frame
+   
+    /***********************************************************************/
+    // Decoration
+    models.push_back(Model(FileSystem::getPath("resources/objects/Decorations/cloth/cloth.obj")));     // Frame
+    models.push_back(Model(FileSystem::getPath("resources/objects/Decorations/pallet/pallet.obj")));     // Frame
 
     //position for each models
     std::vector<glm::vec3> modelPositions = {
@@ -234,26 +224,22 @@ int main()
         glm::vec3(-3.2f, 0.48f, -4.53f),    // belt
 
         // Rak 1
-        glm::vec3(-1.5f, 0.02f, -4.0f),glm::vec3(-0.63f, 0.02f, -4.0f), glm::vec3(0.24f, 0.02f, -4.0f), glm::vec3(1.11f, 0.02f, -4.0f), glm::vec3(1.98f, 0.02f, -4.0f), glm::vec3(2.85f, 0.02f, -4.0f),
+        glm::vec3(-1.5f, 0.02f, -4.0f),
+        
         // Box Rak 1
         glm::vec3(4.4f, 0.058f, -1.6f), glm::vec3(4.4f, 0.058f, -1.3f), glm::vec3(4.4f, 0.058f, -1.0f),
 
-
         // Rak 2
         glm::vec3(-1.5f, 0.02f, -3.0f),
-        glm::vec3(-0.63f, 0.02f, -3.0f),
-        glm::vec3(0.24f, 0.02f, -3.0f),
-        glm::vec3(1.11f, 0.02f, -3.0f),
-        glm::vec3(1.98f, 0.02f, -3.0f),
-        glm::vec3(2.85f, 0.02f, -3.0f),
 
         // Rak 3
         glm::vec3(-1.5f, 0.02f, -2.0f),
-        glm::vec3(-0.63f, 0.02f, -2.0f),
-        glm::vec3(0.24f, 0.02f, -2.0f),
-        glm::vec3(1.11f, 0.02f, -2.0f),
-        glm::vec3(1.98f, 0.02f, -2.0f),
-        glm::vec3(2.85f, 0.02f, -2.0f),
+
+        // Cloth
+        glm::vec3(-1.0f, 0.0f, -1.2f),
+     
+        // Pallet
+        glm::vec3(0.0f, 0.0f, -2.0f),
     };
 
     // scale for each models
@@ -281,16 +267,20 @@ int main()
         glm::vec3(0.01f, 0.035f, 0.035f),    // Belt
 
         // Rak 1 (6)
-        glm::vec3(0.17f, 0.17f, 0.17f), glm::vec3(0.17f, 0.17f, 0.17f),glm::vec3(0.17f, 0.17f, 0.17f), glm::vec3(0.17f, 0.17f, 0.17f),glm::vec3(0.17f, 0.17f, 0.17f),glm::vec3(0.17f, 0.17f, 0.17f),
+        glm::vec3(0.17f, 0.17f, 0.17f), 
 
         // Box Rak 1(3)
         glm::vec3(0.5f, 0.5f, 0.5f),glm::vec3(0.5f, 0.5f, 0.5f),glm::vec3(0.5f, 0.5f, 0.5f),
 
         // Rak 2 (6)
-        glm::vec3(0.17f, 0.17f, 0.17f),glm::vec3(0.17f, 0.17f, 0.17f),glm::vec3(0.17f, 0.17f, 0.17f),glm::vec3(0.17f, 0.17f, 0.17f),glm::vec3(0.17f, 0.17f, 0.17f),glm::vec3(0.17f, 0.17f, 0.17f),
-
+        glm::vec3(0.17f, 0.17f, 0.17f),
         // Rak 3
-        glm::vec3(0.17f, 0.17f, 0.17f), glm::vec3(0.17f, 0.17f, 0.17f),glm::vec3(0.17f, 0.17f, 0.17f),glm::vec3(0.17f, 0.17f, 0.17f),glm::vec3(0.17f, 0.17f, 0.17f), glm::vec3(0.17f, 0.17f, 0.17f),
+        glm::vec3(0.17f, 0.17f, 0.17f),
+
+        // Cloth
+        glm::vec3(0.22f, 0.22f, 0.22f),
+        // Pallet
+        glm::vec3(0.05f, 0.05f, 0.05f),
     };
 
 
@@ -298,7 +288,7 @@ int main()
     std::vector<size_t> animationModelIndices = { 5, 9 };
 
 
-    std::vector<size_t> rotate90Y = { 10, 17,18, 19 }; // [10] spawner conveyor tinggi, [17-19] box rak1
+    std::vector<size_t> rotate90Y = { 10, 12,13, 14 }; // [10] spawner conveyor tinggi, [17-19] box rak1
     std::vector<size_t> rotate180Y = { 1,5, 7 };           // [1] atap, [5] belt conveyor, [10] spawner kiri
     std::vector<size_t> rotate270Y = {};
 

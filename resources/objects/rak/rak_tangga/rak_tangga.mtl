@@ -1,0 +1,46 @@
+# Blender 4.3.0 MTL File: 'rak_tangga.blend'
+# www.blender.org
+
+newmtl WarehouseShelfMaterial
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd textures/Image_0.png
+map_d textures/Image_0.png
+map_Bump -bm 1.000000 textures/Image_2.png
+
+newmtl WarehouseShelfMaterial.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd textures/Image_0.png
+map_d textures/Image_0.png
+map_Bump -bm 1.000000 textures/Image_2.png
+
+newmtl WarehouseShelfMaterial.002
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd textures/Image_0.png
+map_d textures/Image_0.png
+map_Bump -bm 1.000000 textures/Image_2.png
+
+newmtl WarehouseShelfMaterial.003
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd textures/Image_0.003.png
+map_d textures/Image_0.003.png
+map_Bump -bm 1.000000 textures/Image_2.003.png
