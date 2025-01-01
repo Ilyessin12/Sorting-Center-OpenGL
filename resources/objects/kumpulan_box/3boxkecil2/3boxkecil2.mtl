@@ -1,0 +1,35 @@
+# Blender 4.3.2 MTL File: '3boxkecil2.blend'
+# www.blender.org
+
+newmtl Cardboad_60H_A
+Ns 32.000008
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Image_6.png
+map_Bump -bm 1.000000 textures/Image_7.png
+
+newmtl Cardboad_60H_B
+Ns 32.000008
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Image_8.png
+map_Bump -bm 1.000000 textures/Image_9.png
+
+newmtl Cardboad_80_A
+Ns 32.000008
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Image_16.png
+map_Bump -bm 1.000000 textures/Image_17.png

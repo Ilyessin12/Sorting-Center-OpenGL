@@ -1,0 +1,68 @@
+# Blender 4.3.0 MTL File: '4boxbesartengahkosong.blend'
+# www.blender.org
+
+newmtl Cardboad_140_B
+Ns 32.000008
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Image_2.png
+map_Bump -bm 1.000000 textures/Image_3.png
+
+newmtl Cardboad_140_B.001
+Ns 32.000008
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Image_2.png
+map_Bump -bm 1.000000 textures/Image_3.png
+
+newmtl Cardboad_140_C.002
+Ns 32.000008
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Image_4.png
+map_Bump -bm 1.000000 textures/Image_5.png
+
+newmtl Cardboad_140_C.003
+Ns 32.000008
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Image_4.png
+map_Bump -bm 1.000000 textures/Image_5.png
+
+newmtl Cardboad_140_C.004
+Ns 32.000008
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Image_4.png
+map_Bump -bm 1.000000 textures/Image_5.png
+
+newmtl Cardboad_140_C.005
+Ns 32.000008
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Image_4.png
+map_Bump -bm 1.000000 textures/Image_5.png
