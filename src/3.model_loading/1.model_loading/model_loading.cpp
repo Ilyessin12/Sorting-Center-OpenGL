@@ -186,6 +186,7 @@ int main()
     // Decoration
     models.push_back(Model(FileSystem::getPath("resources/objects/Decorations/cloth/cloth.obj")));     // Frame
     models.push_back(Model(FileSystem::getPath("resources/objects/Decorations/pallet/pallet.obj")));     // Frame
+    models.push_back(Model(FileSystem::getPath("resources/objects/Decorations/forklift/forklift.obj")));     // Frame
 
     //position for each models
     std::vector<glm::vec3> modelPositions = {
@@ -236,10 +237,13 @@ int main()
         glm::vec3(-1.5f, 0.02f, -2.0f),
 
         // Cloth
-        glm::vec3(-1.0f, 0.0f, -1.2f),
+        glm::vec3(-1.0f, 0.02f, -1.2f),
      
         // Pallet
-        glm::vec3(0.0f, 0.0f, -2.0f),
+        glm::vec3(4.9f, 0.03f, -1.0f),
+
+        // Forklift
+        glm::vec3(-4.7f, 0.0f, -3.2f),
     };
 
     // scale for each models
@@ -279,8 +283,11 @@ int main()
 
         // Cloth
         glm::vec3(0.22f, 0.22f, 0.22f),
+        
         // Pallet
         glm::vec3(0.05f, 0.05f, 0.05f),
+
+        glm::vec3(0.11f, 0.11f, 0.11f),
     };
 
 
