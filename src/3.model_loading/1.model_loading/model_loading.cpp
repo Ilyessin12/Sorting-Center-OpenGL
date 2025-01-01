@@ -30,14 +30,16 @@ void updateWindowTitle(GLFWwindow* window, const Camera& camera)
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void processInput(GLFWwindow* window);
+//void processInput(GLFWwindow* window,);
+void processInput(GLFWwindow* window, const std::vector<BoundingBox>& worldBoundingBoxes);
+
 
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 1.0f));
+Camera camera(glm::vec3(-3.70f, 0.30f, -3.08f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -50,7 +52,7 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 // Ini khusus Hafidh buat path
- const std::string basePath = "D:/College/Semester_3/visual_studio/Sorting-Center-OpenGL/src/3.model_loading/1.model_loading/";
+// const std::string basePath = "D:/College/Semester_3/visual_studio/Sorting-Center-OpenGL/src/3.model_loading/1.model_loading/";
 
 
 //BOX MOVEMENT LOGICS
@@ -132,13 +134,13 @@ int main()
     // -------------------------
 
     // Buat yang lain pake yang ini
-    //Shader ourShader("1.model_loading.vs", "1.model_loading.fs");
+    Shader ourShader("1.model_loading.vs", "1.model_loading.fs");
 
 
     //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
     // Buat Hafidh pake yg ini ; jadikan komen line ini jika terjadi error
-     Shader ourShader((basePath + "1.model_loading.vs").c_str(),
-        (basePath + "1.model_loading.fs").c_str());
+    // Shader ourShader((basePath + "1.model_loading.vs").c_str(),
+    //    (basePath + "1.model_loading.fs").c_str());
     //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 
 
@@ -299,6 +301,18 @@ int main()
     std::vector<size_t> rotate180Y = { 1,5, 7 };           // [1] atap, [5] belt conveyor, [10] spawner kiri
     std::vector<size_t> rotate270Y = {};
 
+	//bounding boxes (hitboxes) for each models
+    //mostly not used
+    std::vector<BoundingBox> worldBoundingBoxes;
+
+    for (size_t i = 0; i < models.size(); ++i) {
+
+        if (i < 2) {
+            BoundingBox box = computeBoundingBox(modelPositions[i], modelScales[i]);
+            worldBoundingBoxes.push_back(box);
+        }
+    }
+
     //for box logic
     //glm::vec3 initialSmallBoxPos = modelPositions[3]; // Store the original position of the small box
     float meltTimer = 0.0f; // Timer to track time after melting
@@ -326,7 +340,8 @@ int main()
 
         // input
         // -----
-        processInput(window);
+        // processInput(window);
+        processInput(window, worldBoundingBoxes);
 
         // *Update the window title with the camera position*
         // Update every 0.5 seconds
@@ -392,7 +407,6 @@ int main()
         }
         */
 
-        // Update the movement phases
         // Update the movement phases
         switch (movementPhase)
         {
@@ -524,8 +538,6 @@ int main()
                 model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotasi di sumbu Y
             }
 
-
-
             model = glm::translate(model, modelPositions[i]);
             model = glm::scale(model, modelScales[i]);
             ourShader.setMat4("model", model);
@@ -536,10 +548,24 @@ int main()
 
             // Only animate the texture for the objects that is set beforehand
 
-            if (std::find(animationModelIndices.begin(), animationModelIndices.end(), i) != animationModelIndices.end()) {
-                animateTexture = true;
-                //H|V
-                movementDirection = glm::vec2(0.0f, 1.0f);
+            // Check if the current model is a conveyor belt
+            if (i == 5) // Conveyor belt (Index 5)
+            {
+                // Conveyor's texture moves during phases 1 and 3
+                if (movementPhase != 2)
+                {
+                    animateTexture = true;
+                    movementDirection = glm::vec2(0.0f, 1.0f); // Adjust direction if needed
+                }
+            }
+            else if (i == 9) // Conveyor tinggi belt (Index 9)
+            {
+                // Conveyor tinggi's texture moves during phase 2
+                if (movementPhase == 2)
+                {
+                    animateTexture = true;
+                    movementDirection = glm::vec2(0.0f, 1.0f); // Adjust direction if needed
+                }
             }
 
 
@@ -566,6 +592,8 @@ int main()
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
+
+/*
 void processInput(GLFWwindow* window)
 {
     // Close window on ESC
@@ -585,13 +613,38 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, deltaTime);
 
-    // Vertical movement keys (Left shift for down and space for up)
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-        camera.ProcessKeyboard(UP, deltaTime);
 
-    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-        camera.ProcessKeyboard(DOWN, deltaTime);
+   
+    // Vertical movement keys (Left shift for down and space for up)
+    // if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+    //    camera.ProcessKeyboard(UP, deltaTime);
+    //
+    // if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+    //    camera.ProcessKeyboard(DOWN, deltaTime);
+   
 }
+*/
+
+void processInput(GLFWwindow* window, const std::vector<BoundingBox>& worldBoundingBoxes)
+{
+    // Close window on ESC
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
+
+    // Movement keys (WASD for movement) with collision detection
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        camera.ProcessKeyboardCollision(FORWARD, deltaTime, worldBoundingBoxes);
+
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        camera.ProcessKeyboardCollision(BACKWARD, deltaTime, worldBoundingBoxes);
+
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        camera.ProcessKeyboardCollision(LEFT, deltaTime, worldBoundingBoxes);
+
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        camera.ProcessKeyboardCollision(RIGHT, deltaTime, worldBoundingBoxes);
+}
+
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 // ---------------------------------------------------------------------------------------------

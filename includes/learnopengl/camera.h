@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <vector>
 
 // Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
 enum Camera_Movement {
@@ -18,10 +19,40 @@ enum Camera_Movement {
 // Default camera values
 const float YAW         = -90.0f;
 const float PITCH       =  0.0f;
-const float SPEED       =  7.5f;
+const float SPEED       =  1.5f;
 const float SENSITIVITY =  0.1f;
 const float ZOOM        =  45.0f;
+float groundLevelY;
 
+//COLLISION DETECTION LOGICS
+//radius
+float cameraRadius = 0.3;
+
+// Bounding box structure
+struct BoundingBox {
+    glm::vec3 min;
+    glm::vec3 max;
+};
+
+BoundingBox computeBoundingBox(const glm::vec3& position, const glm::vec3& scale) {
+    glm::vec3 halfScale = scale * 0.5f;
+    BoundingBox box;
+    box.min = position - halfScale;
+    box.max = position + halfScale;
+    return box;
+}
+
+bool checkCollisionSphereAABB(const glm::vec3& sphereCenter, float sphereRadius, const BoundingBox& box) {
+    glm::vec3 closestPoint;
+    closestPoint.x = glm::clamp(sphereCenter.x, box.min.x, box.max.x);
+    closestPoint.y = glm::clamp(sphereCenter.y, box.min.y, box.max.y);
+    closestPoint.z = glm::clamp(sphereCenter.z, box.min.z, box.max.z);
+
+    //use dot product to find the distance squared because no length2 somehow
+    glm::vec3 difference = sphereCenter - closestPoint;
+    float distanceSquared = glm::dot(difference, difference);
+    return distanceSquared < (sphereRadius * cameraRadius);
+}
 
 // An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
 class Camera
@@ -48,6 +79,7 @@ public:
         WorldUp = up;
         Yaw = yaw;
         Pitch = pitch;
+        groundLevelY = position.y; // Set ground level to initial Y position
         updateCameraVectors();
     }
     // constructor with scalar values
@@ -70,6 +102,11 @@ public:
     void ProcessKeyboard(Camera_Movement direction, float deltaTime)
     {
         float velocity = MovementSpeed * deltaTime;
+
+        // Movement directions projected onto the XZ plane
+        glm::vec3 frontXZ = glm::normalize(glm::vec3(Front.x, 0.0f, Front.z));
+        glm::vec3 rightXZ = glm::normalize(glm::vec3(Right.x, 0.0f, Right.z));
+
         if (direction == FORWARD)
             Position += Front * velocity;
         if (direction == BACKWARD)
@@ -78,10 +115,15 @@ public:
             Position -= Right * velocity;
         if (direction == RIGHT)
             Position += Right * velocity;
+
+		//Vertical movement
         if (direction == UP)
             Position += WorldUp * velocity;
         if (direction == DOWN)
             Position -= WorldUp * velocity;
+
+        // Keep the camera at the initial Y position (prevent vertical movement)
+        Position.y = groundLevelY;
     }
 
     // processes input received from a mouse input system. Expects the offset value in both the x and y direction.
@@ -115,6 +157,45 @@ public:
         if (Zoom > 45.0f)
             Zoom = 45.0f;
     }
+
+	// Check if a sphere and an AABB are colliding (Collision detection)
+    void ProcessKeyboardCollision(Camera_Movement direction, float deltaTime, const std::vector<BoundingBox>& worldBoundingBoxes)
+    {
+        float velocity = MovementSpeed * deltaTime;
+        glm::vec3 newPosition = Position;
+
+        // Movement directions projected onto the XZ plane
+        glm::vec3 frontXZ = glm::normalize(glm::vec3(Front.x, 0.0f, Front.z));
+        glm::vec3 rightXZ = glm::normalize(glm::vec3(Right.x, 0.0f, Right.z));
+
+        if (direction == FORWARD)
+            newPosition += frontXZ * velocity;
+        if (direction == BACKWARD)
+            newPosition -= frontXZ * velocity;
+        if (direction == LEFT)
+            newPosition -= rightXZ * velocity;
+        if (direction == RIGHT)
+            newPosition += rightXZ * velocity;
+
+        // Keep the camera at the ground level Y position
+        newPosition.y = Position.y; // Assuming you want to preserve the camera's Y position
+
+        // Check for collisions with each bounding box
+        bool collisionDetected = false;
+        for (const BoundingBox& box : worldBoundingBoxes) {
+            if (checkCollisionSphereAABB(newPosition, cameraRadius, box)) {
+                collisionDetected = true;
+                break;
+            }
+        }
+
+        // If no collision, update the position
+        if (!collisionDetected) {
+            Position = newPosition;
+        }
+        // Optionally, implement sliding along the surfaces if a collision is detected
+    }
+
 
 private:
     // calculates the front vector from the Camera's (updated) Euler Angles
