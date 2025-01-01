@@ -52,8 +52,33 @@ float lastFrame = 0.0f;
 // Ini khusus Hafidh buat path
 // const std::string basePath = "D:/College/Semester_3/visual_studio/Sorting-Center-OpenGL/src/3.model_loading/1.model_loading/";
 
+
+//BOX MOVEMENT LOGICS
 //movement speed for box object logic, alter if needed
-float moveSpeed = 1.5f;
+float moveSpeed = 1.0f;
+//movement logic for box object
+bool MoveTowards(glm::vec3& currentPos, const glm::vec3& targetPos, float speed, float deltaTime)
+{
+    glm::vec3 direction = targetPos - currentPos;
+    float distance = glm::length(direction);
+    if (distance <= 0.001f) // Threshold to consider as reached
+    {
+        currentPos = targetPos;
+        return true;
+    }
+
+    glm::vec3 move = glm::normalize(direction) * speed * deltaTime;
+    if (glm::length(move) >= distance)
+    {
+        currentPos = targetPos;
+        return true;
+    }
+    else
+    {
+        currentPos += move;
+        return false;
+    }
+}
 
 
 
@@ -180,7 +205,16 @@ int main()
         glm::vec3(0.0f, -3.8f, 3.0f),    // atap
 
         // Box
-        glm::vec3(-4.7f, 0.2f, 0.8f),    // besar
+
+        //initialStopPosition (position when the model stops initially for box besar)
+        //glm::vec3(-4.7f, 0.2f, 0.8f),    // besar
+
+        //position when the model spawns
+		glm::vec3(-5.5f, 0.2f, 0.8f),    // besar
+
+        //finalStopPosition (position when the model stops at the destination for box besar)
+        //glm::vec3(-2.0f, 0.2f, 0.8f),    // besar
+
         glm::vec3(-4.3f, 0.55f, 3.43f),    // kecil
 
 
@@ -269,10 +303,21 @@ int main()
     std::vector<size_t> rotate270Y = {};
 
     //for box logic
-    glm::vec3 initialSmallBoxPos = modelPositions[3]; // Store the original position of the small box
+    //glm::vec3 initialSmallBoxPos = modelPositions[3]; // Store the original position of the small box
     float meltTimer = 0.0f; // Timer to track time after melting
     bool isMelted = false;  // Flag to indicate if the box has melted
 
+    // Positions for boxBesar (Index 2)
+    glm::vec3 initialBoxBesarPos = modelPositions[2];
+    glm::vec3 firstStopPosBoxBesar = glm::vec3(-4.7f, 0.2f, 0.8f); // Designated position where boxBesar stops in Phase 1
+    glm::vec3 finalPosBoxBesar = glm::vec3(-2.0f, 0.2f, 0.8f);      // Final position after Phase 3
+
+    // Positions for boxKecil (Index 3)
+    glm::vec3 initialBoxKecilPos = modelPositions[3];
+    glm::vec3 meltPosition = firstStopPosBoxBesar; // Position where boxKecil melts into boxBesar
+
+    // Movement phase tracking
+    int movementPhase = 1; // Start with Phase 1
 
     while (!glfwWindowShouldClose(window))
     {
@@ -295,6 +340,7 @@ int main()
             lastTitleUpdateTime = currentFrame;
         }
 
+        /*
         //for box logic
 
         // Update the small box's position
@@ -346,6 +392,100 @@ int main()
                 smallBoxPos = initialSmallBoxPos;
                 isMelted = false;
             }
+        }
+        */
+
+        // Update the movement phases
+        // Update the movement phases
+        switch (movementPhase)
+        {
+        case 1: // Phase 1: Move boxBesar to firstStopPosBoxBesar
+        {
+            if (MoveTowards(modelPositions[2], firstStopPosBoxBesar, moveSpeed, deltaTime))
+            {
+                // Transition to Phase 2
+                movementPhase = 2;
+            }
+
+            // Ensure boxKecil stays at its initial position
+            modelPositions[3] = initialBoxKecilPos;
+            break;
+        }
+
+        case 2: // Phase 2: boxKecil moves towards boxBesar, boxBesar waits
+        {
+            // Keep boxBesar at firstStopPosBoxBesar
+            modelPositions[2] = firstStopPosBoxBesar;
+
+            // Update the small box's position using the previous logic
+            glm::vec3& smallBoxPos = modelPositions[3]; // Index of the small box
+            glm::vec3& largeBoxPos = modelPositions[2]; // Index of the large box
+
+            if (!isMelted)
+            {
+                // Move along Z-axis until Z positions are equal
+                if (smallBoxPos.z != largeBoxPos.z)
+                {
+                    float zDirection = (largeBoxPos.z - smallBoxPos.z) > 0 ? 1.0f : -1.0f;
+                    smallBoxPos.z += zDirection * moveSpeed * deltaTime;
+
+                    // Clamp the position to the large box's Z position
+                    if ((zDirection > 0 && smallBoxPos.z > largeBoxPos.z) ||
+                        (zDirection < 0 && smallBoxPos.z < largeBoxPos.z))
+                    {
+                        smallBoxPos.z = largeBoxPos.z;
+                    }
+                }
+                // Once Z positions are equal, move along Y-axis
+                else if (smallBoxPos.y != largeBoxPos.y)
+                {
+                    float yDirection = (largeBoxPos.y - smallBoxPos.y) > 0 ? 1.0f : -1.0f;
+                    smallBoxPos.y += yDirection * moveSpeed * deltaTime;
+
+                    // Clamp the position to the large box's Y position
+                    if ((yDirection > 0 && smallBoxPos.y > largeBoxPos.y) ||
+                        (yDirection < 0 && smallBoxPos.y < largeBoxPos.y))
+                    {
+                        smallBoxPos.y = largeBoxPos.y;
+                    }
+                }
+                else
+                {
+                    // The small box has melted with the large box
+                    isMelted = true;
+                    meltTimer = 0.9f; // Start the timer
+
+                    // Transition to Phase 3
+                    movementPhase = 3;
+                }
+            }
+            break;
+        }
+
+        case 3: // Phase 3: boxBesar moves to final position, boxKecil respawns
+        {
+            // Reset boxKecil to initial position after a delay
+            meltTimer += deltaTime;
+            if (meltTimer >= 1.0f)
+            {
+                modelPositions[3] = initialBoxKecilPos; // Reset to initial position
+                isMelted = false;
+            }
+
+            if (MoveTowards(modelPositions[2], finalPosBoxBesar, moveSpeed, deltaTime))
+            {
+                // Reset positions and restart the movement
+                modelPositions[2] = initialBoxBesarPos;
+                movementPhase = 1;
+            }
+            break;
+        }
+
+        default:
+        {
+            break;
+        }
+   
         }
 
 
