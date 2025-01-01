@@ -30,7 +30,7 @@ void updateWindowTitle(GLFWwindow* window, const Camera& camera)
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void processInput(GLFWwindow *window);
+void processInput(GLFWwindow* window);
 
 // settings
 const unsigned int SCR_WIDTH = 800;
@@ -49,11 +49,12 @@ std::vector<Model> models;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-//movement speed for box object logic, alter if needed
-float moveSpeed = 2.5f;
-
 // Ini khusus Hafidh buat path
 // const std::string basePath = "D:/College/Semester_3/visual_studio/Sorting-Center-OpenGL/src/3.model_loading/1.model_loading/";
+
+//movement speed for box object logic, alter if needed
+float moveSpeed = 1.5f;
+
 
 
 int main()
@@ -104,7 +105,7 @@ int main()
 
     // build and compile shaders
     // -------------------------
-    
+
     // Buat yang lain pake yang ini
     Shader ourShader("1.model_loading.vs", "1.model_loading.fs");
 
@@ -114,64 +115,164 @@ int main()
     // Shader ourShader((basePath + "1.model_loading.vs").c_str(),
     //    (basePath + "1.model_loading.fs").c_str());
     //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-     
-    
+
+
     // load models
     // -----------
-    // Model ourModel(FileSystem::getPath("resources/objects/rak/rak.obj")); //rak
 
-    models.push_back(Model(FileSystem::getPath("resources/objects/conveyortinggi/frame/frameconveyor.obj")));     // Frame
-    models.push_back(Model(FileSystem::getPath("resources/objects/conveyortinggi/belt/belt.obj")));     // Belt
-	//models.push_back(Model(FileSystem::getPath("resources/objects/spawner/baggage.obj"))); //box spawner
-    models.push_back(Model(FileSystem::getPath("resources/objects/boxdetail/boxbesarterbuka/boxbesarterbuka.obj")));// large box
-    models.push_back(Model(FileSystem::getPath("resources/objects/boxdetail/boxkeciltertutup/boxkeciltertutup.obj")));// small box
+    // Background [0-1]
+    models.push_back(Model(FileSystem::getPath("resources/objects/building/WallAndFloor/dindingdanlantai.obj")));   // Dinding
+    models.push_back(Model(FileSystem::getPath("resources/objects/building/roof/atap.obj")));                       // Atap
+
+    // Box spawned [2-3]
+    models.push_back(Model(FileSystem::getPath("resources/objects/boxdetail/boxbesarterbuka/boxbesarterbuka.obj")));    // Box besar
+    models.push_back(Model(FileSystem::getPath("resources/objects/boxdetail/boxkeciltertutup/boxkeciltertutup.obj")));  // Box kecil
+
+    // Conveyor [4-5]
+    models.push_back(Model(FileSystem::getPath("resources/objects/conveyor/newconveyor/untitled.obj")));            // Frame
+    models.push_back(Model(FileSystem::getPath("resources/objects/conveyor/newconveyor/belt/beltconveyor.obj")));   // Belt
+
+    // Spawner [6-7]
+    models.push_back(Model(FileSystem::getPath("resources/objects/spawnernew/untitled.obj")));  // Kanan
+    models.push_back(Model(FileSystem::getPath("resources/objects/spawnernew/untitled.obj")));  // Kiri
+
+    // Conveyor tinggi [8-9]
+    models.push_back(Model(FileSystem::getPath("resources/objects/conveyor/untitled.obj")));        // Frame
+    models.push_back(Model(FileSystem::getPath("resources/objects/conveyortinggi/belt/belt.obj"))); // belt
+
+    // Spawner [10]
+    models.push_back(Model(FileSystem::getPath("resources/objects/spawnernew/untitled.obj")));
+
+    // Rak 1 [11-16]
+    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakFull/rak.obj")));
+    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));
+    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));
+    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));
+    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));
+    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));
+
+    // Box Rak 1 [17-19]
+    models.push_back(Model(FileSystem::getPath("resources/objects/boxdetail/boxkeciltertutup/boxkeciltertutup.obj")));     // Frame
+    models.push_back(Model(FileSystem::getPath("resources/objects/boxdetail/boxkeciltertutup/boxkeciltertutup.obj")));
+    models.push_back(Model(FileSystem::getPath("resources/objects/boxdetail/boxkeciltertutup/boxkeciltertutup.obj")));
+
+    // Rak 2 [20-25]
+    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));     // Frame
+    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));     // Frame
+    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));     // Frame
+    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));     // Frame
+    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));     // Frame
+    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));     // Frame
+
+    // Rak 3 [26-31]
+    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));     // Frame
+    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));     // Frame
+    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));     // Frame
+    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));     // Frame
+    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));     // Frame
+    models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakOnly/rakonly.obj")));     // Frame
 
     //position for each models
     std::vector<glm::vec3> modelPositions = {
-        //belt should be right ontop of the conveyor belt without belt model
         // horizontal | Vertikal | Far
-
-        // Conveyor belt 1
+                  // Background
         glm::vec3(0.0f, 0.0f, 0.0f),    // Frame
-        glm::vec3(0.25f, -4.4f, 0.235f), // Belt
+        glm::vec3(0.0f, -3.8f, 3.0f),    // atap
 
-        //box spawner
-		//glm::vec3(1.0f, 0.0f, 0.0f), //box spawner
-		// large box
-		glm::vec3(-1.7f, 0.0f, -6.0f), // large box
-		// small box
-		glm::vec3(3.7f, 4.0f, 24.0f), // small box
+        // Box
+        glm::vec3(-4.7f, 0.2f, 0.8f),    // besar
+        glm::vec3(-4.3f, 0.55f, 3.43f),    // kecil
+
+
+        // Conveyor
+        glm::vec3(-3.5f, -0.012f, 0.55f),    // Frame
+        glm::vec3(3.5f, 0.079f, -0.69f),    // belt 
+
+        // Spawner conveyor
+        glm::vec3(-5.16f, 0.14f, 0.63f),    // Kanan
+        glm::vec3(2.17f, 0.14f, -0.63f),    // Kiri
+
+        // Conveyor tinggi
+        glm::vec3(-4.5f, 0.048f, 1.43f),    // Frame
+        glm::vec3(-4.5f, -0.13f, 1.32f),    // belt
+
+
+        glm::vec3(-3.2f, 0.48f, -4.53f),    // belt
+
+        // Rak 1
+        glm::vec3(-1.5f, 0.02f, -4.0f),glm::vec3(-0.63f, 0.02f, -4.0f), glm::vec3(0.24f, 0.02f, -4.0f), glm::vec3(1.11f, 0.02f, -4.0f), glm::vec3(1.98f, 0.02f, -4.0f), glm::vec3(2.85f, 0.02f, -4.0f),
+        // Box Rak 1
+        glm::vec3(4.4f, 0.058f, -1.6f), glm::vec3(4.4f, 0.058f, -1.3f), glm::vec3(4.4f, 0.058f, -1.0f),
+
+
+        // Rak 2
+        glm::vec3(-1.5f, 0.02f, -3.0f),
+        glm::vec3(-0.63f, 0.02f, -3.0f),
+        glm::vec3(0.24f, 0.02f, -3.0f),
+        glm::vec3(1.11f, 0.02f, -3.0f),
+        glm::vec3(1.98f, 0.02f, -3.0f),
+        glm::vec3(2.85f, 0.02f, -3.0f),
+
+        // Rak 3
+        glm::vec3(-1.5f, 0.02f, -2.0f),
+        glm::vec3(-0.63f, 0.02f, -2.0f),
+        glm::vec3(0.24f, 0.02f, -2.0f),
+        glm::vec3(1.11f, 0.02f, -2.0f),
+        glm::vec3(1.98f, 0.02f, -2.0f),
+        glm::vec3(2.85f, 0.02f, -2.0f),
     };
 
     // scale for each models
     std::vector<glm::vec3> modelScales = {
-        // Conveyor belt 1
-        glm::vec3(0.5f, 0.5f, 0.5f),    // Belt
-        glm::vec3(0.5f, 0.5f, 0.5f),    // Belt
+        // Background (dinding, atap)
+        glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.17f, 0.17f, 0.17f),    // Belt
 
-		//box spawner
-		//glm::vec3(0.5f, 0.5f, 0.5f), //box spawner
-		// large box
-		glm::vec3(4.5f, 4.5f, 4.5f), // large box
-		// small box
-		glm::vec3(4.5f, 4.5f, 4.5f), // small box
+        // Box
+        glm::vec3(0.45f, 0.45f, 0.45f),    // Besar
+        glm::vec3(0.26f, 0.26f, 0.26f),    // Kecil
+
+        // Conveyor
+        glm::vec3(0.04f, 0.04f, 0.04f),    // Frame
+        glm::vec3(0.04f, 0.04f, 0.04f),    // Belt
+
+        // Spawner conveyor
+        glm::vec3(0.01f, 0.06f, 0.04f),     // Kanan
+        glm::vec3(0.01f, 0.06f, 0.04f),     // Kiri
+
+        // Conveyor tinggi
+        glm::vec3(0.04f, 0.04f, 0.04f),    // Frame
+        glm::vec3(0.04f, 0.04f, 0.04f),    // Belt
+
+        // Spawner conveyor tinggi
+        glm::vec3(0.01f, 0.035f, 0.035f),    // Belt
+
+        // Rak 1 (6)
+        glm::vec3(0.17f, 0.17f, 0.17f), glm::vec3(0.17f, 0.17f, 0.17f),glm::vec3(0.17f, 0.17f, 0.17f), glm::vec3(0.17f, 0.17f, 0.17f),glm::vec3(0.17f, 0.17f, 0.17f),glm::vec3(0.17f, 0.17f, 0.17f),
+
+        // Box Rak 1(3)
+        glm::vec3(0.5f, 0.5f, 0.5f),glm::vec3(0.5f, 0.5f, 0.5f),glm::vec3(0.5f, 0.5f, 0.5f),
+
+        // Rak 2 (6)
+        glm::vec3(0.17f, 0.17f, 0.17f),glm::vec3(0.17f, 0.17f, 0.17f),glm::vec3(0.17f, 0.17f, 0.17f),glm::vec3(0.17f, 0.17f, 0.17f),glm::vec3(0.17f, 0.17f, 0.17f),glm::vec3(0.17f, 0.17f, 0.17f),
+
+        // Rak 3
+        glm::vec3(0.17f, 0.17f, 0.17f), glm::vec3(0.17f, 0.17f, 0.17f),glm::vec3(0.17f, 0.17f, 0.17f),glm::vec3(0.17f, 0.17f, 0.17f),glm::vec3(0.17f, 0.17f, 0.17f), glm::vec3(0.17f, 0.17f, 0.17f),
     };
 
 
     //index for the model that wants its texture to be animated
-    size_t animationModelIndex = 1;
+    std::vector<size_t> animationModelIndices = { 5, 9 };
 
-	//for box logic
+
+    std::vector<size_t> rotate90Y = { 10, 17,18, 19 }; // [10] spawner conveyor tinggi, [17-19] box rak1
+    std::vector<size_t> rotate180Y = { 1,5, 7 };           // [1] atap, [5] belt conveyor, [10] spawner kiri
+    std::vector<size_t> rotate270Y = {};
+
+    //for box logic
     glm::vec3 initialSmallBoxPos = modelPositions[3]; // Store the original position of the small box
     float meltTimer = 0.0f; // Timer to track time after melting
     bool isMelted = false;  // Flag to indicate if the box has melted
 
-    
-    // draw in wireframe
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-    // render loop
-    // -----------
 
     while (!glfwWindowShouldClose(window))
     {
@@ -247,6 +348,7 @@ int main()
             }
         }
 
+
         // render
         // ------
         glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
@@ -257,7 +359,7 @@ int main()
 
         // This is related to the texture animation speed
         // Calculate a time offset for texture animation
-        float speed = 0.1f; // Adjust this value to control the speed
+        float speed = 0.04f; // Adjust this value to control the speed
         float timeValue = glfwGetTime() * speed;
         ourShader.setFloat("time", timeValue);
 
@@ -273,6 +375,20 @@ int main()
         {
             // Model transformation
             glm::mat4 model = glm::mat4(1.0f);
+
+
+            if (std::find(rotate180Y.begin(), rotate180Y.end(), i) != rotate180Y.end()) {
+                model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotasi di sumbu Y
+            }
+            if (std::find(rotate270Y.begin(), rotate270Y.end(), i) != rotate270Y.end()) {
+                model = glm::rotate(model, glm::radians(270.0f), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotasi di sumbu Y
+            }
+            if (std::find(rotate90Y.begin(), rotate90Y.end(), i) != rotate90Y.end()) {
+                model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotasi di sumbu Y
+            }
+
+
+
             model = glm::translate(model, modelPositions[i]);
             model = glm::scale(model, modelScales[i]);
             ourShader.setMat4("model", model);
@@ -283,14 +399,12 @@ int main()
 
             // Only animate the texture for the objects that is set beforehand
 
-            if (i == animationModelIndex)
-            {
-                //enable animation
+            if (std::find(animationModelIndices.begin(), animationModelIndices.end(), i) != animationModelIndices.end()) {
                 animateTexture = true;
-                //change the direction of where your texture wants to move
-                //                       horizontal/vertical
+                //H|V
                 movementDirection = glm::vec2(0.0f, 1.0f);
             }
+
 
             // Set the animation uniforms (very importantE)
             ourShader.setBool("animateTexture", animateTexture);
