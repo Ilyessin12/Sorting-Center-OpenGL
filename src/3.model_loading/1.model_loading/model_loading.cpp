@@ -82,6 +82,15 @@ bool MoveTowards(glm::vec3& currentPos, const glm::vec3& targetPos, float speed,
     }
 }
 
+//simple jump mechanics
+bool isJumping = false; 
+float jumpVelocity = 0.0f; 
+const float gravity = -9.81f; 
+const float jumpStrength = 3.0f; 
+float groundLevel = camera.Position.y;
+float baseYPosition = 0.30f; // Initial Y position (matches camera's starting Y)
+glm::vec3 cameraVelocity = glm::vec3(0.0f);
+
 
 
 int main()
@@ -367,6 +376,21 @@ int main()
         // -----
         // processInput(window);
         processInput(window);
+
+        // Apply jump physics
+        if (isJumping)
+        {
+            jumpVelocity += gravity * deltaTime;
+            camera.Position.y += jumpVelocity * deltaTime;
+
+            // Check if landed
+            if (camera.Position.y <= baseYPosition)
+            {
+                camera.Position.y = baseYPosition;
+                isJumping = false;
+                jumpVelocity = 0.0f;
+            }
+        }
 
         // *Update the window title with the camera position*
         // Update every 0.5 seconds
@@ -656,7 +680,10 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    // Movement keys (WASD for movement) with collision
+    // Store original Y position before processing WASD movement
+    float originalY = camera.Position.y;
+
+    // Process WASD movement normally
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         camera.ProcessKeyboard(FORWARD, deltaTime);
 
@@ -668,6 +695,16 @@ void processInput(GLFWwindow* window)
 
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, deltaTime);
+
+    // Restore Y position after WASD movement
+    camera.Position.y = originalY;
+
+    // Jump initiation
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && !isJumping)
+    {
+        isJumping = true;
+        jumpVelocity = jumpStrength;
+    }
 }
 
 
