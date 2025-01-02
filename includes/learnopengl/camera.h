@@ -25,33 +25,93 @@ const float ZOOM        =  45.0f;
 float groundLevelY;
 
 //COLLISION DETECTION LOGICS
-//radius
-float cameraRadius = 0.3;
+// Fungsi untuk mengecek collision dengan bounding box sederhana
+bool checkCollision(const glm::vec3& position, const glm::vec3& boundingBoxMin, const glm::vec3& boundingBoxMax) {
+    //std::cout << "Position: " << position.x << ", " << position.y << ", " << position.z << std::endl;
+    //std::cout << "Bounding Box Min: " << boundingBoxMin.x << ", " << boundingBoxMin.y << ", " << boundingBoxMin.z << std::endl;
+    //std::cout << "Bounding Box Max: " << boundingBoxMax.x << ", " << boundingBoxMax.y << ", " << boundingBoxMax.z << std::endl;
 
-// Bounding box structure
-struct BoundingBox {
-    glm::vec3 min;
-    glm::vec3 max;
-};
-
-BoundingBox computeBoundingBox(const glm::vec3& position, const glm::vec3& scale) {
-    glm::vec3 halfScale = scale * 0.5f;
-    BoundingBox box;
-    box.min = position - halfScale;
-    box.max = position + halfScale;
-    return box;
+    return (position.x >= boundingBoxMin.x && position.x <= boundingBoxMax.x) &&
+        (position.y >= boundingBoxMin.y && position.y <= boundingBoxMax.y) &&
+        (position.z >= boundingBoxMin.z && position.z <= boundingBoxMax.z);
 }
 
-bool checkCollisionSphereAABB(const glm::vec3& sphereCenter, float sphereRadius, const BoundingBox& box) {
-    glm::vec3 closestPoint;
-    closestPoint.x = glm::clamp(sphereCenter.x, box.min.x, box.max.x);
-    closestPoint.y = glm::clamp(sphereCenter.y, box.min.y, box.max.y);
-    closestPoint.z = glm::clamp(sphereCenter.z, box.min.z, box.max.z);
+// Fungsi untuk mengecek collision dengan semua objek
+bool checkCollisionWithObjects(const glm::vec3& newPosition) {
+    float margin = 0.1f; // Margin untuk mencegah kamera terlalu dekat dengan objek
 
-    //use dot product to find the distance squared because no length2 somehow
-    glm::vec3 difference = sphereCenter - closestPoint;
-    float distanceSquared = glm::dot(difference, difference);
-    return distanceSquared < (sphereRadius * cameraRadius);
+    // Background dan Atap
+    // Dinding dan lantai menggunakan bounding box yang lebih besar
+    //glm::vec3 wallMin(-6.0f, -1.0f, -5.0f);
+    //glm::vec3 wallMax(6.0f, 4.0f, 5.0f);
+
+    //// Cek collision dengan dinding
+    //if (newPosition.x <= wallMin.x + margin || newPosition.x >= wallMax.x - margin ||
+    //    newPosition.y <= wallMin.y + margin || newPosition.y >= wallMax.y - margin ||
+    //    newPosition.z <= wallMin.z + margin || newPosition.z >= wallMax.z - margin) {
+    //    return true;
+    //}
+
+    // Conveyor Systems
+    // Conveyor utama
+    if (checkCollision(newPosition,
+        glm::vec3(-5.33f, -0.01f, 0.26f),
+        glm::vec3(-1.51f, 0.93f, 0.97f))) return true;
+
+    // Forklift
+    if (checkCollision(newPosition,
+        glm::vec3(-4.88f, 0.00f, -3.82f),
+        glm::vec3(-4.50f, 0.98f, -2.32f))) return true;
+
+    // Cloth
+    if (checkCollision(newPosition,
+        glm::vec3(-1.51f, 0.04f, -1.66f),
+        glm::vec3(-0.55f, 0.65f, -1.06f))) return true;
+
+    // Dinding L
+    if (checkCollision(newPosition,
+        glm::vec3(-2.2f, 0.03f, -0.78f),
+        glm::vec3(5.8f, 1.04f, 3.9f))) return true;
+
+    // Dinding kanan conveyor
+    if (checkCollision(newPosition,
+        glm::vec3(-6.2f, 0.03f, -4.76f),
+        glm::vec3(-5.1f, 1.98f, 3.25f))) return true;
+
+    // Dinding kanan rak
+    if (checkCollision(newPosition,
+        glm::vec3(-5.25f, 0.03f, -5.7f),
+        glm::vec3(5.43f, 1.01f, -4.7f))) return true;
+
+    // Dinding belakang
+    if (checkCollision(newPosition,
+        glm::vec3(5.35f, 0.03f, -4.70f),
+        glm::vec3(5.81f, 1.0f, -0.79f))) return true;
+
+    // Lantai 
+    // Lantai (menghentikan pergerakan vertikal, objek tetap di atas lantai)
+    /*if (checkCollision(newPosition, glm::vec3(-5.45f, -0.5f, -4.90f), glm::vec3(5.86f, 0.33f, 3.87f))) {
+        return true;
+    }*/
+
+
+    // Rak Systems
+    // Rak 1
+    if (checkCollision(newPosition,
+        glm::vec3(-2.0f, -0.01f, -2.17f),
+        glm::vec3(3.35f, 0.73f, -1.79f))) return true;
+
+    // Rak 2
+    if (checkCollision(newPosition,
+        glm::vec3(-1.96f, 0.01f, -3.21f),
+        glm::vec3(3.37f, 0.72f, -2.78f))) return true;
+
+    // Rak 3
+    if (checkCollision(newPosition,
+        glm::vec3(-2.01f, -0.01f, -4.19f),
+        glm::vec3(3.37f, 0.69f, -3.80f))) return true;
+
+    return false;
 }
 
 // An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
@@ -102,28 +162,34 @@ public:
     void ProcessKeyboard(Camera_Movement direction, float deltaTime)
     {
         float velocity = MovementSpeed * deltaTime;
+        glm::vec3 newPosition = Position;
 
         // Movement directions projected onto the XZ plane
         glm::vec3 frontXZ = glm::normalize(glm::vec3(Front.x, 0.0f, Front.z));
         glm::vec3 rightXZ = glm::normalize(glm::vec3(Right.x, 0.0f, Right.z));
 
         if (direction == FORWARD)
-            Position += Front * velocity;
+            newPosition += Front * velocity;
         if (direction == BACKWARD)
-            Position -= Front * velocity;
+            newPosition -= Front * velocity;
         if (direction == LEFT)
-            Position -= Right * velocity;
+            newPosition -= Right * velocity;
         if (direction == RIGHT)
-            Position += Right * velocity;
+            newPosition += Right * velocity;
 
 		//Vertical movement
         if (direction == UP)
-            Position += WorldUp * velocity;
+            newPosition += WorldUp * velocity;
         if (direction == DOWN)
-            Position -= WorldUp * velocity;
+            newPosition -= WorldUp * velocity;
 
         // Keep the camera at the initial Y position (prevent vertical movement)
-        Position.y = groundLevelY;
+        newPosition.y = groundLevelY;
+
+        // Check collision before updating position
+        if (!checkCollisionWithObjects(newPosition)) {
+            Position = newPosition;
+        }
     }
 
     // processes input received from a mouse input system. Expects the offset value in both the x and y direction.
@@ -157,45 +223,6 @@ public:
         if (Zoom > 45.0f)
             Zoom = 45.0f;
     }
-
-	// Check if a sphere and an AABB are colliding (Collision detection)
-    void ProcessKeyboardCollision(Camera_Movement direction, float deltaTime, const std::vector<BoundingBox>& worldBoundingBoxes)
-    {
-        float velocity = MovementSpeed * deltaTime;
-        glm::vec3 newPosition = Position;
-
-        // Movement directions projected onto the XZ plane
-        glm::vec3 frontXZ = glm::normalize(glm::vec3(Front.x, 0.0f, Front.z));
-        glm::vec3 rightXZ = glm::normalize(glm::vec3(Right.x, 0.0f, Right.z));
-
-        if (direction == FORWARD)
-            newPosition += frontXZ * velocity;
-        if (direction == BACKWARD)
-            newPosition -= frontXZ * velocity;
-        if (direction == LEFT)
-            newPosition -= rightXZ * velocity;
-        if (direction == RIGHT)
-            newPosition += rightXZ * velocity;
-
-        // Keep the camera at the ground level Y position
-        newPosition.y = Position.y; // Assuming you want to preserve the camera's Y position
-
-        // Check for collisions with each bounding box
-        bool collisionDetected = false;
-        for (const BoundingBox& box : worldBoundingBoxes) {
-            if (checkCollisionSphereAABB(newPosition, cameraRadius, box)) {
-                collisionDetected = true;
-                break;
-            }
-        }
-
-        // If no collision, update the position
-        if (!collisionDetected) {
-            Position = newPosition;
-        }
-        // Optionally, implement sliding along the surfaces if a collision is detected
-    }
-
 
 private:
     // calculates the front vector from the Camera's (updated) Euler Angles

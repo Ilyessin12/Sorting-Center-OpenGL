@@ -1,4 +1,4 @@
-# Blender 4.3.0 MTL File: 'tigaboxbesar.blend'
+# Blender 4.3.0 MTL File: 'randombox2.blend'
 # www.blender.org
 
 newmtl Cardboad_140_B
@@ -66,6 +66,39 @@ d 1.000000
 illum 2
 map_Kd textures/Image_2.005.png
 map_Bump -bm 1.000000 textures/Image_3.005.png
+
+newmtl Cardboad_140_B.006
+Ns 32.000008
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Image_2.005.png
+map_Bump -bm 1.000000 textures/Image_3.005.png
+
+newmtl Cardboad_140_B.007
+Ns 32.000008
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Image_2.004.png
+map_Bump -bm 1.000000 textures/Image_3.004.png
+
+newmtl Cardboad_140_B.008
+Ns 32.000008
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Image_2.003.png
+map_Bump -bm 1.000000 textures/Image_3.003.png
 
 newmtl Cardboad_140_C
 Ns 32.000008
@@ -198,3 +231,69 @@ d 1.000000
 illum 2
 map_Kd textures/Image_4.005.png
 map_Bump -bm 1.000000 textures/Image_5.005.png
+
+newmtl Cardboad_140_C.012
+Ns 32.000008
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Image_4.005.png
+map_Bump -bm 1.000000 textures/Image_5.005.png
+
+newmtl Cardboad_140_C.013
+Ns 32.000008
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Image_4.004.png
+map_Bump -bm 1.000000 textures/Image_5.004.png
+
+newmtl Cardboad_140_C.014
+Ns 32.000008
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Image_4.003.png
+map_Bump -bm 1.000000 textures/Image_5.003.png
+
+newmtl Cardboad_140_C.015
+Ns 32.000008
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Image_4.005.png
+map_Bump -bm 1.000000 textures/Image_5.005.png
+
+newmtl Cardboad_140_C.016
+Ns 32.000008
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Image_4.004.png
+map_Bump -bm 1.000000 textures/Image_5.004.png
+
+newmtl Cardboad_140_C.017
+Ns 32.000008
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Image_4.003.png
+map_Bump -bm 1.000000 textures/Image_5.003.png

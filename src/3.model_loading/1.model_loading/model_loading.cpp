@@ -31,7 +31,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 //void processInput(GLFWwindow* window,);
-void processInput(GLFWwindow* window, const std::vector<BoundingBox>& worldBoundingBoxes);
+void processInput(GLFWwindow* window);
 
 
 // settings
@@ -338,18 +338,6 @@ int main()
     std::vector<size_t> rotate180Y = { 1,5, 7 };           // [1] atap, [5] belt conveyor, [10] spawner kiri
     std::vector<size_t> rotate270Y = {};
 
-	//bounding boxes (hitboxes) for each models
-    //mostly not used
-    std::vector<BoundingBox> worldBoundingBoxes;
-
-    for (size_t i = 0; i < models.size(); ++i) {
-
-        if (i < 2) {
-            BoundingBox box = computeBoundingBox(modelPositions[i], modelScales[i]);
-            worldBoundingBoxes.push_back(box);
-        }
-    }
-
     //for box logic
     //glm::vec3 initialSmallBoxPos = modelPositions[3]; // Store the original position of the small box
     float meltTimer = 0.0f; // Timer to track time after melting
@@ -378,7 +366,7 @@ int main()
         // input
         // -----
         // processInput(window);
-        processInput(window, worldBoundingBoxes);
+        processInput(window);
 
         // *Update the window title with the camera position*
         // Update every 0.5 seconds
@@ -662,24 +650,24 @@ void processInput(GLFWwindow* window)
 }
 */
 
-void processInput(GLFWwindow* window, const std::vector<BoundingBox>& worldBoundingBoxes)
+void processInput(GLFWwindow* window)
 {
     // Close window on ESC
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    // Movement keys (WASD for movement) with collision detection
+    // Movement keys (WASD for movement) with collision
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.ProcessKeyboardCollision(FORWARD, deltaTime, worldBoundingBoxes);
+        camera.ProcessKeyboard(FORWARD, deltaTime);
 
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.ProcessKeyboardCollision(BACKWARD, deltaTime, worldBoundingBoxes);
+        camera.ProcessKeyboard(BACKWARD, deltaTime);
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.ProcessKeyboardCollision(LEFT, deltaTime, worldBoundingBoxes);
+        camera.ProcessKeyboard(LEFT, deltaTime);
 
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.ProcessKeyboardCollision(RIGHT, deltaTime, worldBoundingBoxes);
+        camera.ProcessKeyboard(RIGHT, deltaTime);
 }
 
 
