@@ -18,19 +18,20 @@
 //function to update the windows title so we could see the x y z value in real time
 void updateWindowTitle(GLFWwindow* window, const Camera& camera)
 {
+	// Update window title with camera position, use stringstream to format the string
     std::stringstream ss;
     ss << "Sorting-Center-|-Camera-Position: ("
         << std::fixed << std::setprecision(2)
         << camera.Position.x << ", "
         << camera.Position.y << ", "
         << camera.Position.z << ")";
+	// Set the window title to the new string
     glfwSetWindowTitle(window, ss.str().c_str());
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-//void processInput(GLFWwindow* window,);
 void processInput(GLFWwindow* window);
 
 
@@ -50,10 +51,6 @@ std::vector<Model> models;
 // timing
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
-
-// Ini khusus Hafidh buat path
-// const std::string basePath = "D:/College/Semester_3/visual_studio/Sorting-Center-OpenGL/src/3.model_loading/1.model_loading/";
-
 
 //BOX MOVEMENT LOGICS
 //movement speed for box object logic, alter if needed
@@ -83,13 +80,13 @@ bool MoveTowards(glm::vec3& currentPos, const glm::vec3& targetPos, float speed,
 }
 
 //simple jump mechanics
-bool isJumping = false; 
-float jumpVelocity = 0.0f; 
-const float gravity = -9.81f; 
-const float jumpStrength = 3.0f; 
-float groundLevel = camera.Position.y;
+bool isJumping = false;  //to check if the player is currently jumping or not
+float jumpVelocity = 0.0f; //to store the current jump velocity
+const float gravity = -9.81f; //gravity value
+const float jumpStrength = 3.0f;  //jump strength, can be adjusted
+float groundLevel = camera.Position.y; //ground level so we cannot float freely in the air
 float baseYPosition = 0.30f; // Initial Y position (matches camera's starting Y)
-glm::vec3 cameraVelocity = glm::vec3(0.0f);
+glm::vec3 cameraVelocity = glm::vec3(0.0f); // Camera's current velocity to apply it to the position
 
 
 
@@ -132,8 +129,6 @@ int main()
         return -1;
     }
 
-    // tell stb_image.h to flip loaded texture's on the y-axis (before loading model).
-    // stbi_set_flip_vertically_on_load(true);
 
     // configure global opengl state
     // -----------------------------
@@ -142,16 +137,8 @@ int main()
     // build and compile shaders
     // -------------------------
 
-    // Buat yang lain pake yang ini
+	// Shaders for the models
     Shader ourShader("1.model_loading.vs", "1.model_loading.fs");
-
-
-    //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-    // Buat Hafidh pake yg ini ; jadikan komen line ini jika terjadi error
-    // Shader ourShader((basePath + "1.model_loading.vs").c_str(),
-    //    (basePath + "1.model_loading.fs").c_str());
-    //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-
 
     // load models
     // -----------
@@ -182,7 +169,7 @@ int main()
     // Rak 1 [11-16]
     models.push_back(Model(FileSystem::getPath("resources/objects/rak/rak_tangga/rak_tangga.obj")));
 
-    // Box Rak 1 [17-19]
+    // Box Rak 1 [17-36]
     models.push_back(Model(FileSystem::getPath("resources/objects/boxdetail/boxkeciltertutup/boxkeciltertutup.obj")));     // Frame
     models.push_back(Model(FileSystem::getPath("resources/objects/boxdetail/boxkeciltertutup/boxkeciltertutup.obj")));
     models.push_back(Model(FileSystem::getPath("resources/objects/boxdetail/boxkeciltertutup/boxkeciltertutup.obj")));
@@ -206,14 +193,14 @@ int main()
 
 
 
-    // Rak 2 [20-25]
+    // Rak 2 [37]
     models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakonly.obj")));     // Frame
 
-    // Rak 3 [26-31]
+    // Rak 3 [38]
     models.push_back(Model(FileSystem::getPath("resources/objects/rak/rakonly.obj")));     // Frame
 
     /***********************************************************************/
-    // Decoration
+	// Decorations [39-41]
     models.push_back(Model(FileSystem::getPath("resources/objects/Decorations/cloth/cloth.obj")));     // Frame
     models.push_back(Model(FileSystem::getPath("resources/objects/Decorations/pallet/pallet.obj")));     // Frame
     models.push_back(Model(FileSystem::getPath("resources/objects/Decorations/forklift/forklift.obj")));     // Frame
@@ -226,16 +213,7 @@ int main()
         glm::vec3(0.0f, -3.8f, 3.0f),    // atap
 
         // Box
-
-        //initialStopPosition (position when the model stops initially for box besar)
-        //glm::vec3(-4.7f, 0.2f, 0.8f),    // besar
-
-        //position when the model spawns
         glm::vec3(-5.5f, 0.2f, 0.8f),    // besar
-
-        //finalStopPosition (position when the model stops at the destination for box besar)
-        //glm::vec3(-2.0f, 0.2f, 0.8f),    // besar
-
         glm::vec3(-4.3f, 0.55f, 3.43f),    // kecil
 
 
@@ -258,17 +236,17 @@ int main()
         glm::vec3(-1.5f, 0.02f, -4.0f),
 
         // Box Rak 1 (1 DEPAN, 2 TENGAH, 3 BELAKANG)
-        glm::vec3(4.4f, 0.058f, -1.6f), //1
-        glm::vec3(4.4f, 0.058f, -1.3f), //1
-        glm::vec3(4.4f, 0.058f, -1.0f), //1
-        glm::vec3(3.97f, 0.07f, -0.67f), //1 0 1
-        glm::vec3(3.97f, 0.07f, 1.97f), //1 0 1
-        glm::vec3(2.97f, 0.07f, -1.57f), //1 0 1
-        glm::vec3(2.97f, 0.07f, 1.963f), //1 0 1
-        glm::vec3(1.97f, 0.07f, -0.67f), //1 0 1
-        glm::vec3(1.97f, 0.07f, 1.97f), //1 0 1
-        glm::vec3(2.97f, 0.545f, -0.65f), //1 0 1
-        glm::vec3(2.97f, 0.545f, 1.94f), //1 0 1
+        glm::vec3(4.4f, 0.058f, -1.6f), 
+        glm::vec3(4.4f, 0.058f, -1.3f), 
+        glm::vec3(4.4f, 0.058f, -1.0f), 
+        glm::vec3(3.97f, 0.07f, -0.67f),
+        glm::vec3(3.97f, 0.07f, 1.97f),
+        glm::vec3(2.97f, 0.07f, -1.57f),
+        glm::vec3(2.97f, 0.07f, 1.963f),
+        glm::vec3(1.97f, 0.07f, -0.67f),
+        glm::vec3(1.97f, 0.07f, 1.97f),
+        glm::vec3(2.97f, 0.545f, -0.65f),
+        glm::vec3(2.97f, 0.545f, 1.94f),
         glm::vec3(1.97f, 0.545f, -1.557f),
         glm::vec3(2.97f, 0.302f, -1.55f),
         glm::vec3(1.97f, 0.545f, 1.557f),
@@ -341,14 +319,12 @@ int main()
 
     //index for the model that wants its texture to be animated
     std::vector<size_t> animationModelIndices = { 5, 9 };
-
-
-    std::vector<size_t> rotate90Y = { 10, 12,13, 14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30 }; // [10] spawner conveyor tinggi, [17-19] box rak1
+	// model rotations so that the model faces the right direction
+    std::vector<size_t> rotate90Y = { 10, 12,13, 14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30 }; // [10] spawner conveyor tinggi, box rak for the rest
     std::vector<size_t> rotate180Y = { 1,5, 7 };           // [1] atap, [5] belt conveyor, [10] spawner kiri
     std::vector<size_t> rotate270Y = {};
 
-    //for box logic
-    //glm::vec3 initialSmallBoxPos = modelPositions[3]; // Store the original position of the small box
+    //for box animation logic
     float meltTimer = 0.0f; // Timer to track time after melting
     bool isMelted = false;  // Flag to indicate if the box has melted
 
@@ -400,61 +376,6 @@ int main()
             updateWindowTitle(window, camera);
             lastTitleUpdateTime = currentFrame;
         }
-
-        /*
-        //for box logic
-
-        // Update the small box's position
-        glm::vec3& smallBoxPos = modelPositions[3]; // Index of the small box
-        glm::vec3& largeBoxPos = modelPositions[2]; // Index of the large box
-
-        if (!isMelted)
-        {
-            // Move along Z-axis until Z positions are equal
-            if (smallBoxPos.z != largeBoxPos.z)
-            {
-                float zDirection = (largeBoxPos.z - smallBoxPos.z) > 0 ? 1.0f : -1.0f;
-                smallBoxPos.z += zDirection * moveSpeed * deltaTime;
-
-                // Clamp the position to the large box's Z position
-                if ((zDirection > 0 && smallBoxPos.z > largeBoxPos.z) ||
-                    (zDirection < 0 && smallBoxPos.z < largeBoxPos.z))
-                {
-                    smallBoxPos.z = largeBoxPos.z;
-                }
-            }
-            // Once Z positions are equal, move along Y-axis
-            else if (smallBoxPos.y != largeBoxPos.y)
-            {
-                float yDirection = (largeBoxPos.y - smallBoxPos.y) > 0 ? 1.0f : -1.0f;
-                smallBoxPos.y += yDirection * moveSpeed * deltaTime;
-
-                // Clamp the position to the large box's Y position
-                if ((yDirection > 0 && smallBoxPos.y > largeBoxPos.y) ||
-                    (yDirection < 0 && smallBoxPos.y < largeBoxPos.y))
-                {
-                    smallBoxPos.y = largeBoxPos.y;
-                }
-            }
-            else
-            {
-                // The small box has melted with the large box
-                isMelted = true;
-                meltTimer = 0.0f; // Start the timer
-            }
-        }
-        else
-        {
-            // Increment the timer
-            meltTimer += deltaTime;
-            if (meltTimer >= 1.0f)
-            {
-                // Reset the small box to its original position
-                smallBoxPos = initialSmallBoxPos;
-                isMelted = false;
-            }
-        }
-        */
 
         // Update the movement phases
         switch (movementPhase)
@@ -641,38 +562,6 @@ int main()
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-
-/*
-void processInput(GLFWwindow* window)
-{
-    // Close window on ESC
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-
-    // Movement keys (WASD for movement)
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.ProcessKeyboard(FORWARD, deltaTime);
-
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.ProcessKeyboard(BACKWARD, deltaTime);
-
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.ProcessKeyboard(LEFT, deltaTime);
-
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.ProcessKeyboard(RIGHT, deltaTime);
-
-
-   
-    // Vertical movement keys (Left shift for down and space for up)
-    // if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-    //    camera.ProcessKeyboard(UP, deltaTime);
-    //
-    // if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-    //    camera.ProcessKeyboard(DOWN, deltaTime);
-   
-}
-*/
 
 void processInput(GLFWwindow* window)
 {

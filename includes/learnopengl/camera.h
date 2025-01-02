@@ -27,9 +27,6 @@ float groundLevelY;
 //COLLISION DETECTION LOGICS
 // Fungsi untuk mengecek collision dengan bounding box sederhana
 bool checkCollision(const glm::vec3& position, const glm::vec3& boundingBoxMin, const glm::vec3& boundingBoxMax) {
-    //std::cout << "Position: " << position.x << ", " << position.y << ", " << position.z << std::endl;
-    //std::cout << "Bounding Box Min: " << boundingBoxMin.x << ", " << boundingBoxMin.y << ", " << boundingBoxMin.z << std::endl;
-    //std::cout << "Bounding Box Max: " << boundingBoxMax.x << ", " << boundingBoxMax.y << ", " << boundingBoxMax.z << std::endl;
 
     return (position.x >= boundingBoxMin.x && position.x <= boundingBoxMax.x) &&
         (position.y >= boundingBoxMin.y && position.y <= boundingBoxMax.y) &&
@@ -40,19 +37,7 @@ bool checkCollision(const glm::vec3& position, const glm::vec3& boundingBoxMin, 
 bool checkCollisionWithObjects(const glm::vec3& newPosition) {
     float margin = 0.1f; // Margin untuk mencegah kamera terlalu dekat dengan objek
 
-    // Background dan Atap
-    // Dinding dan lantai menggunakan bounding box yang lebih besar
-    //glm::vec3 wallMin(-6.0f, -1.0f, -5.0f);
-    //glm::vec3 wallMax(6.0f, 4.0f, 5.0f);
-
-    //// Cek collision dengan dinding
-    //if (newPosition.x <= wallMin.x + margin || newPosition.x >= wallMax.x - margin ||
-    //    newPosition.y <= wallMin.y + margin || newPosition.y >= wallMax.y - margin ||
-    //    newPosition.z <= wallMin.z + margin || newPosition.z >= wallMax.z - margin) {
-    //    return true;
-    //}
-
-    // Conveyor Systems
+	//Manual assigning collision box for each object
     // Conveyor utama
     if (checkCollision(newPosition,
         glm::vec3(-5.33f, -0.01f, 0.26f),
@@ -87,13 +72,6 @@ bool checkCollisionWithObjects(const glm::vec3& newPosition) {
     if (checkCollision(newPosition,
         glm::vec3(5.35f, 0.03f, -4.70f),
         glm::vec3(5.81f, 1.0f, -0.79f))) return true;
-
-    // Lantai 
-    // Lantai (menghentikan pergerakan vertikal, objek tetap di atas lantai)
-    /*if (checkCollision(newPosition, glm::vec3(-5.45f, -0.5f, -4.90f), glm::vec3(5.86f, 0.33f, 3.87f))) {
-        return true;
-    }*/
-
 
     // Rak Systems
     // Rak 1
@@ -161,6 +139,7 @@ public:
     // Processes input received from any keyboard-like input system.
     void ProcessKeyboard(Camera_Movement direction, float deltaTime)
     {
+		// Set the velocity of the camera
         float velocity = MovementSpeed * deltaTime;
         glm::vec3 newPosition = Position;
 
