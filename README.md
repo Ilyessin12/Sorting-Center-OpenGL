@@ -17,6 +17,15 @@ git clone https://github.com/Ilyessin12/Sorting-Center-OpenGL.git
 2. Open the project in Visual Studio 2022, it should be built automatically
 3. Run the project, the main file is on model_loading.cpp
 
+## Main Controls
+The controls used are as follows:
+- Mouse to look around
+- W to move Forward
+- A to move Left
+- S to move Backward
+- D to move Right
+- Space to Jump
+
 ## Additional Notes
 If you there is an error when you try to debug it, always reconfigure and recache the build
 1. Open Project Bar
